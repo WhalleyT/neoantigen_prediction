@@ -67,7 +67,7 @@ if(params.gtf){
 
 if(params.fasta){
     Channel.fromPath(params.fasta).ifEmpty{exit 1, "GTF file not found in ${params.fasta}"}.
-    into{idx_fasta}
+    set{idx_fasta}
 }else{
     exit 1, "FASTA argument not supplied"
 }
