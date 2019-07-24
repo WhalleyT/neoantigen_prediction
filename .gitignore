@@ -1,0 +1,7 @@
+work/
+.nextflow.log*
+.nextflow/
+fastqs/
+single*
+paired*
+genomes/
