@@ -59,13 +59,15 @@ if(params.reads && params.pair == "single"){
 }
 
 if(params.gtf){
-    gen_gtf = Channel.fromPath(params.gtf).ifEmpty{exit 1, "GTF file not found in ${params.gtf}"}
+    Channel.fromPath(params.gtf).ifEmpty{exit 1, "GTF file not found in ${params.gtf}"}
+    .into{gen_gtf; idx_gtf}
 }else{
     exit 1, "GTF argument not supplied"
 }
 
 if(params.fasta){
-    gen_fasta = Channel.fromPath(params.fasta).ifEmpty{exit 1, "GTF file not found in ${params.fasta}"}
+    Channel.fromPath(params.fasta).ifEmpty{exit 1, "GTF file not found in ${params.fasta}"}.
+    into{idx_fasta}
 }else{
     exit 1, "FASTA argument not supplied"
 }
@@ -82,8 +84,8 @@ if(params.star_index){
                    saveAs: { params.save_ref ? it : null }, mode: 'copy'
 
         input:
-        file fasta from gen_fasta
-        file gtf from gen_gtf
+        file fasta from idx_fasta
+        file gtf from idx_gtf
 
         output:
         file "star" into star_index
@@ -164,9 +166,7 @@ Run alignment using STAR
 
 process star{
     label 'multithreaded'
-    
-    publishDir "${params.outdir}/STAR", mode: 'copy',
-    saveAs: {filename -> if (filename.indexOf(".bam") == -1) "logs/$filename"}
+    publishDir "${params.outdir}/STAR", mode: 'copy'
 
     input:
     file reads from trimmed_reads
@@ -198,5 +198,44 @@ process star{
          --outFileNamePrefix $prefix $seqCenter
         
     samtools index ${prefix}Aligned.sortedByCoord.out.bam
+    """
+}
+
+/*
+Step 3: VARIANT CALLING
+
+Run variant calling pipeline, using Opossum and
+Platypus
+*/
+
+process opossum{
+    publishDir "${params.outdir}/STAR", mode: 'copy'
+
+    input:
+    file bamfile from star_aligned
+
+    output:
+    file "${bamfile.baseName}_opossum.bam" into platypus_in
+
+    script:
+    """
+    opossum --BamFile bamfile --OutFile "${bamfile.baseName}_opossum.bam
+    """
+
+}
+
+process platypus{
+    publishDir "${params.outdir/platypus}", mode: 'copy'
+
+    input:
+    file bamfile from platypus_in
+
+    output:
+    file "${bamfile.baseName}.vcf" into platypus_vcf
+
+    script:
+    """
+    platypus callVariants --bamFiles $bamfile --refFile $reference --filterDuplicates 0 --minMapQual 0 \
+	--minFlank 0 --maxReadLength 500 --minGoodQualBases 10 --minBaseQual 20 -o ${bamfile.baseName}.vcf
     """
 }
