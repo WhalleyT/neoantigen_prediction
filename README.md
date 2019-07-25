@@ -25,19 +25,19 @@ be accesed by the `-profile` argument. For example to run on Slurm using a singu
 ![workflow](assets/pipeline.png)
 
 ## References
-*[Nextflow](https://www.nature.com/articles/nbt.3820)
+* [Nextflow](https://www.nature.com/articles/nbt.3820)
 
-*[Trim galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
+* [Trim galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
 
-*[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc)
+* [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc)
 
-*[STAR](https://academic.oup.com/bioinformatics/article/29/1/15/272537)
+* [STAR](https://academic.oup.com/bioinformatics/article/29/1/15/272537)
 
-*[Opossum](https://www.nature.com/articles/ng.3036)
+* [Opossum](https://www.nature.com/articles/ng.3036)
 
-*[Platypus](https://www.nature.com/articles/ng.3036)
+* [Platypus](https://www.nature.com/articles/ng.3036)
 
-*[arcasHLA](https://www.biorxiv.org/content/10.1101/479824v1)
+* [arcasHLA](https://www.biorxiv.org/content/10.1101/479824v1)
 
 
 ## License
