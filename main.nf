@@ -179,7 +179,7 @@ process star{
     file "*SJ.out.tab"
     file "*Log.out" into star_log
     file "${prefix}Aligned.sortedByCoord.out.bam.bai" into bam_index_rseqc, bam_index_genebody
-    file "*.raw" into raw_counts
+    file "*ReadsPerGene.out.tab" into raw_counts
 
     script:
     prefix = reads[0].toString() - ~/(_R1)?(_trimmed)?(_val_1)?(\.fq)?(\.fastq)?(\.gz)?$/
