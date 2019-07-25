@@ -6,4 +6,5 @@ single*
 paired*
 genomes/
 results/
+results/*
 *simg
