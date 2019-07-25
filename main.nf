@@ -183,9 +183,7 @@ process star{
 
     script:
     prefix = reads[0].toString() - ~/(_R1)?(_trimmed)?(_val_1)?(\.fq)?(\.fastq)?(\.gz)?$/
-    def star_mem = task.memory ?: params.star_memory ?: false
-    def avail_mem = star_mem ? "--limitBAMsortRAM ${star_mem.toBytes() - 100000000}" : ''
-    seqCenter = params.seqCenter ? "--outSAMattrRGline ID:$prefix 'CN:$params.seqCenter'" : ''
+
     """
     STAR --genomeDir $index \\
          --sjdbGTFfile $gtf \\
@@ -196,7 +194,7 @@ process star{
          --outSAMtype BAM SortedByCoordinate $avail_mem \\
          --readFilesCommand zcat \\
          --runDirPerm All_RWX \\
-         --outFileNamePrefix $prefix $seqCenter \\
+         --outFileNamePrefix $prefix \\
          --quantMode GeneCounts
         
     samtools index ${prefix}Aligned.sortedByCoord.out.bam

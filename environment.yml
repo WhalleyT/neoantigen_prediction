@@ -13,3 +13,4 @@ dependencies:
   - opossum
   - platypus-variant
   - bcftools
+  - ensembl-vep
