@@ -1,5 +1,8 @@
 ## Aims
 
+This tool aims to provide a flexible, human interpretable indentification of neoantigens. It is designed for both
+whole exome sequencing (WES) and RNA-seq data, and for human and mouse data. 
+
 ## Installation
 Make sure you have Nextflow installed. It can be downloaded [here](https://www.nextflow.io/).
 
@@ -22,7 +25,17 @@ be accesed by the `-profile` argument. For example to run on Slurm using a singu
 ![workflow](assets/pipeline.png)
 
 ## References
+*[Nextflow](https://www.nature.com/articles/nbt.3820)
+*[Trim galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
+*[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc)
+*[STAR](https://academic.oup.com/bioinformatics/article/29/1/15/272537)
+*[Opossum](https://www.nature.com/articles/ng.3036)
+*[Platypus](https://www.nature.com/articles/ng.3036)
+*[arcasHLA](https://www.biorxiv.org/content/10.1101/479824v1)
+
 
 ## License
+This code is freely available under the GNU GPL V3. Please see [LICENSE](LICENSE) for more information.
 
 ## Contact
+Queries can be made to whalleyt@cardiff.ac.uk. Please feel free to flag issues on this repo, also.
