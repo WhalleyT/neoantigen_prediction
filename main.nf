@@ -179,6 +179,7 @@ process star{
     file "*SJ.out.tab"
     file "*Log.out" into star_log
     file "${prefix}Aligned.sortedByCoord.out.bam.bai" into bam_index_rseqc, bam_index_genebody
+    file "*.raw" into raw_counts
 
     script:
     prefix = reads[0].toString() - ~/(_R1)?(_trimmed)?(_val_1)?(\.fq)?(\.fastq)?(\.gz)?$/
@@ -195,7 +196,8 @@ process star{
          --outSAMtype BAM SortedByCoordinate $avail_mem \\
          --readFilesCommand zcat \\
          --runDirPerm All_RWX \\
-         --outFileNamePrefix $prefix $seqCenter
+         --outFileNamePrefix $prefix $seqCenter \\
+         --quantMode GeneCounts
         
     samtools index ${prefix}Aligned.sortedByCoord.out.bam
     """
@@ -239,3 +241,48 @@ process platypus{
 	--minFlank 0 --maxReadLength 500 --minGoodQualBases 10 --minBaseQual 20 -o ${bamfile.baseName}.vcf
     """
 }
+
+/*
+Step 4: HLA TYPING
+
+If human then run HLA type prediction
+*/
+
+/*
+Step 5: IDENTIFY COMMON VARIANTS
+
+find overlapping variants in the the bed files supplied 
+(if there's more than one). Then also remove those variants
+which are in the alt reference?
+
+Also annotate the variants using ANNOVAR
+*/
+
+process common_variants {
+    publishDir "${params.outdir/variants}", mode: 'copy'
+
+    input:
+    vcfs from platypus_vcf.collect()
+    no_files from platypus_vcf.size()
+
+    output:
+    "overlapping_variants.vcf" into variants
+
+    script:
+    """
+    bcftools isec -n ~$no_files $vcfs -O v -o overlapping_variants.vcf
+    """
+}
+
+/*
+process annovar {
+    publishDir "${params.outdir/variants}", mode: 'copy'
+
+    input:
+    file variant from variants
+
+    script:
+    """
+    """
+}
+*/

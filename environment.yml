@@ -12,3 +12,4 @@ dependencies:
   - samtools=1.9
   - opossum
   - platypus-variant
+  - bcftools
