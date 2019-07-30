@@ -9,3 +9,5 @@ genomes/
 results/
 results/*
 *simg
+nextflow
+results/fastqc
