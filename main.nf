@@ -66,8 +66,8 @@ if(params.gtf){
 }
 
 if(params.fasta){
-    Channel.fromPath(params.fasta).ifEmpty{exit 1, "GTF file not found in ${params.fasta}"}.
-    set{idx_fasta}
+    Channel.fromPath(params.fasta).ifEmpty{exit 1, "GTF file not found in ${params.fasta}"}
+    .into{idx_fasta; platypus_fasta; raw_fasta}
 }else{
     exit 1, "FASTA argument not supplied"
 }
@@ -180,6 +180,7 @@ process star{
     file "*Log.out" into star_log
     file "${prefix}Aligned.sortedByCoord.out.bam.bai" into bam_index_rseqc, bam_index_genebody
     file "*ReadsPerGene.out.tab" into raw_counts
+    file "*sortedByCoord.out.bam" into bams
 
     script:
     prefix = reads[0].toString() - ~/(_R1)?(_trimmed)?(_val_1)?(\.fq)?(\.fastq)?(\.gz)?$/
@@ -191,11 +192,12 @@ process star{
          --runThreadN ${task.cpus} \\
          --twopassMode Basic \\
          --outWigType bedGraph \\
-         --outSAMtype BAM SortedByCoordinate $avail_mem \\
+         --outSAMtype BAM SortedByCoordinate \\
          --readFilesCommand zcat \\
          --runDirPerm All_RWX \\
          --outFileNamePrefix $prefix \\
-         --quantMode GeneCounts
+         --quantMode GeneCounts \\
+         --outSAMattributes All
         
     samtools index ${prefix}Aligned.sortedByCoord.out.bam
     """
@@ -209,34 +211,46 @@ Platypus
 */
 
 process opossum{
-    publishDir "${params.outdir}/STAR", mode: 'copy'
+    publishDir "${params.outdir}/opossum", mode: 'copy'
 
     input:
-    file bamfile from star_aligned
-
+    file bamfile from bams
     output:
     file "${bamfile.baseName}_opossum.bam" into platypus_in
 
     script:
+    if(params.pair == "single"){
     """
-    opossum --BamFile bamfile --OutFile "${bamfile.baseName}_opossum.bam
+    opossum --BamFile $bamfile --OutFile ${bamfile.baseName}_opossum.bam \
+    --SoftClipsExist True --ProperlyPaired False
     """
-
+    } else {
+    """
+    opossum --BamFile $bamfile --OutFile ${bamfile.baseName}_opossum.bam \
+    --SoftClipsExist True
+    """    
+    }
 }
 
 process platypus{
+    label 'multithreaded'
     publishDir "${params.outdir/platypus}", mode: 'copy'
 
     input:
     file bamfile from platypus_in
+    file reference from raw_fasta
 
     output:
     file "${bamfile.baseName}.vcf" into platypus_vcf
 
     script:
     """
+    samtools faidx $fasta
+    samtools index $platypus_in
+
     platypus callVariants --bamFiles $bamfile --refFile $reference --filterDuplicates 0 --minMapQual 0 \
-	--minFlank 0 --maxReadLength 500 --minGoodQualBases 10 --minBaseQual 20 -o ${bamfile.baseName}.vcf
+	--minFlank 0 --maxReadLength 500 --minGoodQualBases 10 --minBaseQual 20 -o ${bamfile.baseName}.vcf \
+    --nCPU ${task.cpus}
     """
 }
 
@@ -260,15 +274,14 @@ process common_variants {
     publishDir "${params.outdir/variants}", mode: 'copy'
 
     input:
-    vcfs from platypus_vcf.collect()
-    no_files from platypus_vcf.size()
+    file(vcfs) from platypus_vcf.collect()
 
     output:
-    "overlapping_variants.vcf" into variants
+    file "overlapping_variants.vcf" into variants
 
     script:
     """
-    bcftools isec -n ~$no_files $vcfs -O v -o overlapping_variants.vcf
+    bcftools isec -n ~${vcfs.size()} $vcfs -O v -o overlapping_variants.vcf
     """
 }
 

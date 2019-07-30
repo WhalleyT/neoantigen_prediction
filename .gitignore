@@ -1,3 +1,4 @@
+indexes/
 work/
 .nextflow.log*
 .nextflow/
