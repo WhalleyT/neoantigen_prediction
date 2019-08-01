@@ -234,7 +234,7 @@ process opossum{
 
 process platypus{
     label 'multithreaded'
-    publishDir "${params.outdir/platypus}", mode: 'copy'
+    publishDir "${params.outdir}/platypus", mode: 'copy'
 
     input:
     file bamfile from platypus_in
@@ -245,8 +245,8 @@ process platypus{
 
     script:
     """
-    samtools faidx $fasta
-    samtools index $platypus_in
+    samtools faidx $reference
+    samtools index $bamfile
 
     platypus callVariants --bamFiles $bamfile --refFile $reference --filterDuplicates 0 --minMapQual 0 \
 	--minFlank 0 --maxReadLength 500 --minGoodQualBases 10 --minBaseQual 20 -o ${bamfile.baseName}.vcf \

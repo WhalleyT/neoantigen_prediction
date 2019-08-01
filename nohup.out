@@ -1,0 +1,135 @@
+N E X T F L O W  ~  version 19.04.1
+Launching `main.nf` [fervent_descartes] - revision: cc8be968d3
+Reading single end reads
+[warm up] executor > slurm
+[8e/e40e2a] process > trim   [100%] 1 of 1, cached: 1
+[ac/d21303] process > fastqc [100%] 1 of 1, cached: 1
+
+[8e/e40e2a] process > trim   [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star   [100%] 1 of 1, cached: 1 ✔
+
+executor >  slurm (1)
+[8e/e40e2a] process > trim    [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc  [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star    [100%] 1 of 1, cached: 1 ✔
+[ff/9925bd] process > opossum [  0%] 0 of 1
+
+executor >  slurm (1)
+[8e/e40e2a] process > trim    [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc  [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star    [100%] 1 of 1, cached: 1 ✔
+[ff/9925bd] process > opossum [  0%] 0 of 1
+ERROR ~ Error executing process > 'opossum (1)'
+
+Caused by:
+  Process `opossum (1)` terminated with an error exit status (127)
+
+Command executed:
+
+  opossum --BamFile testAligned.sortedByCoord.out.bam --OutFile testAligned.sortedByCoord.out_opossum.bam     --SoftClipsExist True --ProperlyPaired False
+
+Command exit status:
+  127
+
+Command output:
+  (empty)
+
+Command error:
+  env: singularity: No such file or directory
+
+Work dir:
+  /scratch/c.c1656075/neoantigen_prediction/work/ff/9925bd9fede51e23a42d3060a34012
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+
+ -- Check '.nextflow.log' file for details
+
+executor >  slurm (1)
+[8e/e40e2a] process > trim    [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc  [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star    [100%] 1 of 1, cached: 1 ✔
+[ff/9925bd] process > opossum [100%] 1 of 1, failed: 1 ✘
+ERROR ~ Error executing process > 'opossum (1)'
+
+Caused by:
+  Process `opossum (1)` terminated with an error exit status (127)
+
+Command executed:
+
+  opossum --BamFile testAligned.sortedByCoord.out.bam --OutFile testAligned.sortedByCoord.out_opossum.bam     --SoftClipsExist True --ProperlyPaired False
+
+Command exit status:
+  127
+
+Command output:
+  (empty)
+
+Command error:
+  env: singularity: No such file or directory
+
+Work dir:
+  /scratch/c.c1656075/neoantigen_prediction/work/ff/9925bd9fede51e23a42d3060a34012
+
+Tip: you can try to figure out what's wrong by changing to the process work dir and showing the script file named `.command.sh`
+
+ -- Check '.nextflow.log' file for details
+N E X T F L O W  ~  version 19.04.1
+Launching `main.nf` [adoring_leakey] - revision: cc8be968d3
+Reading single end reads
+[warm up] executor > slurm
+[8e/e40e2a] process > trim   [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc [100%] 1 of 1, cached: 1 ✔
+
+[8e/e40e2a] process > trim   [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star   [100%] 1 of 1, cached: 1 ✔
+
+executor >  slurm (1)
+[8e/e40e2a] process > trim    [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc  [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star    [100%] 1 of 1, cached: 1 ✔
+[c9/d23c3a] process > opossum [  0%] 0 of 1
+
+executor >  slurm (1)
+[8e/e40e2a] process > trim    [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc  [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star    [100%] 1 of 1, cached: 1 ✔
+[c9/d23c3a] process > opossum [100%] 1 of 1 ✔
+
+executor >  slurm (2)
+[8e/e40e2a] process > trim     [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc   [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star     [100%] 1 of 1, cached: 1 ✔
+[c9/d23c3a] process > opossum  [100%] 1 of 1 ✔
+[f9/6405b2] process > platypus [  0%] 0 of 1
+
+executor >  slurm (2)
+[8e/e40e2a] process > trim     [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc   [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star     [100%] 1 of 1, cached: 1 ✔
+[c9/d23c3a] process > opossum  [100%] 1 of 1 ✔
+[f9/6405b2] process > platypus [  0%] 0 of 1
+ERROR ~ Error executing process > 'platypus (1)'
+
+Caused by:
+  No signature of method: java.lang.String.div() is applicable for argument types: (null) values: [null]
+Possible solutions: is(java.lang.Object), wait(), trim(), md5(), dump(), size()
+
+
+ -- Check script 'main.nf' at line: 237 or see '.nextflow.log' file for more details
+
+executor >  slurm (2)
+[8e/e40e2a] process > trim     [100%] 1 of 1, cached: 1 ✔
+[ac/d21303] process > fastqc   [100%] 1 of 1, cached: 1 ✔
+[60/ac896f] process > star     [100%] 1 of 1, cached: 1 ✔
+[c9/d23c3a] process > opossum  [100%] 1 of 1 ✔
+[f9/6405b2] process > platypus [  0%] 0 of 1
+ERROR ~ Error executing process > 'platypus (1)'
+
+Caused by:
+  No signature of method: java.lang.String.div() is applicable for argument types: (null) values: [null]
+Possible solutions: is(java.lang.Object), wait(), trim(), md5(), dump(), size()
+
+
+ -- Check script 'main.nf' at line: 237 or see '.nextflow.log' file for more details

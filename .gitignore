@@ -6,6 +6,7 @@ fastqs/
 single*
 paired*
 genomes/
+genomes/*
 results/
 results/*
 *simg
