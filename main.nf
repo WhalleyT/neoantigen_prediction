@@ -17,7 +17,7 @@ def usage(){
     --strand        reverse, forward or unstranded (default)
     --outdir        Output directory
     --star_index    Pre-computed STAR index file
-    --pair          paired or single end reads
+    --pair          paired or single end reads, must be 'single' or 'paired'
     """
 }
 
@@ -46,17 +46,19 @@ if(params.pair != "paired" && params.pair != "single"){
     exit 1, "Invalid option for reads: ${params.pair}. It must be 'single' or 'paired'"
 }
 
-if(params.reads && params.pair == "paired"){
-    log.info """Reading paired end reads"""
-    reads = Channel.fromFilePairs(params.reads).ifEmpty{ exit 1, "params.reads was empty - no input files supplied"}
-    .into{raw_fastqc; raw_trimgalore}
+if(params.pair == "paired"){
+    single = false
+}else{
+    single = true
 }
 
-if(params.reads && params.pair == "single"){
-    log.info """Reading single end reads"""
-    raw_reads_trimgalore = Channel.fromPath(params.reads).ifEmpty { exit 1, "params.readPaths was empty - no input files supplied"}
-    .into{raw_fastqc; raw_trimgalore}
-}
+
+Channel
+.fromFilePairs( params.reads, size: single ? 1 : 2 )
+.ifEmpty { exit 1, "Cannot find any reads matching: ${params.reads}, make sure it's enclosed in quotes"}
+.into{raw_fastqc; raw_trimgalore}
+
+
 
 if(params.gtf){
     Channel.fromPath(params.gtf).ifEmpty{exit 1, "GTF file not found in ${params.gtf}"}
@@ -114,7 +116,7 @@ process fastqc{
     publishDir "${params.outdir}/fastqc", mode: 'copy'
 
     input:
-    file r from raw_fastqc
+    set val(name), file(r) from raw_fastqc
 
     output:
     file "*_fastqc.{zip,html}" into fastqc_results
@@ -131,7 +133,7 @@ process trim{
     publishDir "${params.outdir}/trim_galore", mode: 'copy'
 
     input:
-    file r from raw_trimgalore
+    set val(name), file(r) from raw_trimgalore
 
     output:
     file "*fq.gz" into trimmed_reads
@@ -169,7 +171,7 @@ process star{
     publishDir "${params.outdir}/STAR", mode: 'copy'
 
     input:
-    file reads from trimmed_reads
+    each file(reads) from trimmed_reads
     file index from star_index
     file gtf from gen_gtf
 
@@ -237,7 +239,7 @@ process platypus{
     publishDir "${params.outdir}/platypus", mode: 'copy'
 
     input:
-    file bamfile from platypus_in
+    each file(bamfile) from platypus_in
     file reference from raw_fasta
 
     output:
