@@ -243,7 +243,8 @@ process platypus{
     file reference from raw_fasta
 
     output:
-    file "${bamfile.baseName}.vcf" into platypus_vcf
+    file "${bamfile.baseName}.vcf.gz" into platypus_vcf
+    file "${bamfile.baseName}.vcf.gz.csi" into platypus_index
 
     script:
     """
@@ -253,6 +254,9 @@ process platypus{
     platypus callVariants --bamFiles $bamfile --refFile $reference --filterDuplicates 0 --minMapQual 0 \
 	--minFlank 0 --maxReadLength 500 --minGoodQualBases 10 --minBaseQual 20 -o ${bamfile.baseName}.vcf \
     --nCPU ${task.cpus}
+
+    bgzip ${bamfile.baseName}.vcf
+    bcftools index ${bamfile.baseName}.vcf.gz
     """
 }
 
@@ -268,34 +272,47 @@ Step 5: IDENTIFY COMMON VARIANTS
 find overlapping variants in the the bed files supplied 
 (if there's more than one). Then also remove those variants
 which are in the alt reference?
-
-Also annotate the variants using ANNOVAR
 */
 
 process common_variants {
-    publishDir "${params.outdir/variants}", mode: 'copy'
+    publishDir "${params.outdir}/variants", mode: 'copy'
 
     input:
     file(vcfs) from platypus_vcf.collect()
+    file(indexes) from platypus_index.collect()
 
     output:
-    file "overlapping_variants.vcf" into variants
+    file "overlapping_variants.vcf" into present_variants
 
     script:
     """
-    bcftools isec -n ~${vcfs.size()} $vcfs -O v -o overlapping_variants.vcf
+    bcftools isec $vcfs -n =${vcfs.size()} -O v -o overlapping_variants.vcf
     """
 }
 
 /*
-process annovar {
-    publishDir "${params.outdir/variants}", mode: 'copy'
+Step 5: VARIANT ANNOTATION AND PEPTIDE GENERATION
+
+annotate the variants so we know what they are doing.
+Then make a VCF based fasta and translate it such
+that we can then collect the peptides
+*/
+
+process snpEff {
+    publishDir "${params.outdir}/snpEff", mode: 'copy'
+    label 'multithreaded'
 
     input:
-    file variant from variants
+    file var from present_variants
+
+    output:
+    file "effects.vcf" into snp_effects
 
     script:
     """
+    snpEff ann GRCh38.86 $var -Xmx4096m > effects.vcf
     """
 }
-*/
+
+
+
