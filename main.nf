@@ -205,6 +205,27 @@ process star{
     """
 }
 
+process mixcr{
+    publishDir "${params.outdir}/mixcr", mode: 'copy'
+    
+    label 'multithreaded'
+
+    input:
+    each file(reads) from trimmed_reads
+
+    output:
+    file "${prefix}_analysis*txt" into mixcr_out
+
+    script:
+    prefix = reads[0].toString() - ~/(_R1)?(_trimmed)?(_val_1)?(\.fq)?(\.fastq)?(\.gz)?$/
+
+    """
+    mixcr analyze shotgun --species musmusculus --starting-material rna \
+    --only-productive $reads ${prefix}_analysis #-t ${task.cpus}
+    """
+}
+
+
 /*
 Step 3: VARIANT CALLING
 

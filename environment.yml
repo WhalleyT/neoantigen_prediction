@@ -17,4 +17,4 @@ dependencies:
   - htslib
   - snpeff
   - mhcflurry
-
+  - mixcr
