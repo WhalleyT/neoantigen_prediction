@@ -221,7 +221,7 @@ process mixcr{
 
     """
     mixcr analyze shotgun --species musmusculus --starting-material rna \
-    --only-productive $reads ${prefix}_analysis #-t ${task.cpus}
+    --only-productive $reads ${prefix}_analysis 
     """
 }
 
