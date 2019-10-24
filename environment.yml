@@ -18,4 +18,5 @@ dependencies:
   - snpeff
   - mhcflurry
   - mixcr
-  - gatk
+  - bedtools
+  

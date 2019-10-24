@@ -62,14 +62,14 @@ Channel
 
 if(params.gtf){
     Channel.fromPath(params.gtf).ifEmpty{exit 1, "GTF file not found in ${params.gtf}"}
-    .into{gen_gtf; idx_gtf}
+    .into{gen_gtf; idx_gtf, trans_gtf}
 }else{
     exit 1, "GTF argument not supplied"
 }
 
 if(params.fasta){
     Channel.fromPath(params.fasta).ifEmpty{exit 1, "GTF file not found in ${params.fasta}"}
-    .into{idx_fasta; platypus_fasta; raw_fasta}
+    .into{idx_fasta; platypus_fasta; raw_fasta; alt_fasta}
 }else{
     exit 1, "FASTA argument not supplied"
 }
@@ -337,3 +337,43 @@ process snpEff {
 
 
 
+/*
+STEP 6: PEPTIDE GENERATION
+
+take our variants and create an alt genome from
+which we can translate to get the proteome.
+*/
+
+process create_alt{
+    publishDir "${params.outdir}/alt_genome", mode: 'copy'
+
+    input:
+    file snps from snp_effects
+    file genome from alt_fasta
+
+    output:
+    file "alt.fasta" into alt_genome
+
+    script:
+    """
+    gatk FastaAlternateReferenceMaker --reference $alt_fasta --variant $snps --output alt.fasta
+    """
+}
+
+
+process gene_fasta{
+    publishDir "${params.outdir}/gene_fasta", mode: 'copy'
+
+    input:
+    file alt from alt_genome
+    file gtf from trans_gtf
+
+    output:
+    file "genes.fasta" into gene_fasta
+
+    script:
+    """
+    #see if we need split or not...
+    bedtools getfasta -name -s -fi $alt -bed $gtf -fo genes.fasta"
+    """
+}
