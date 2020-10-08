@@ -1,0 +1,22 @@
+#conda env create -f environment.yml
+name: neoantigen
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - aroth85
+dependencies:
+  - fastqc=0.11.8
+  - trim-galore=0.5.0
+  - star=2.6.1d
+  - samtools=1.9
+  - opossum
+  - platypus-variant
+  - bcftools
+  - ensembl-vep
+  - htslib
+  - snpeff
+  - mhcflurry
+  - mixcr
+  - bedtools
+  
