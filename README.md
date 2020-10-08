@@ -1,7 +1,6 @@
 ## Aims
 
-This tool aims to provide a flexible, human interpretable indentification of neoantigens. It is designed for both
-whole exome sequencing (WES) and RNA-seq data, and for human and mouse data. 
+This tool aims to provide a flexible, human interpretable indentification of neoantigens from RNA-seq data.
 
 ## Installation
 Make sure you have Nextflow installed. It can be downloaded [here](https://www.nextflow.io/).
