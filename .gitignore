@@ -13,3 +13,5 @@ results/*
 *simg
 nextflow
 results/fastqc
+build_and_push_docker.sh
+Singularity
